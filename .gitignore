@@ -1,3 +1,4 @@
 node_modules/*
 config_dev.js
 *.swp
+docs/build/*
