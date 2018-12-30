@@ -45,7 +45,16 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx_js'
 ]
+
+primary_domain = 'js'
+
+js_source_path = ['../lib', '../lib/models']
+#jsdoc_config_path = '../tsconfig.json'
+root_for_relative_js_paths = '..'
+#root_for_relative_js_paths = '../..'
+jsdoc_config_path = '../../config.json'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
