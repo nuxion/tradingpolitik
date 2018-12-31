@@ -15,7 +15,7 @@ Lo que me interesa guardar de cada tweet entonces, es:
 
 * **created_at**: "Mon Nov 26 14:55:22 +0000 2018"
 * **id**: bigint
-* id_str: string
+* **id_str**: string
 * **text**: "RT @user Keynote from @anotheruser."
 * truncated: true|false
 * entities:

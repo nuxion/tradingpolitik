@@ -10,8 +10,9 @@ An example:
    :linenos:
 
    const makeTimeline = require('./models/timeline');
-   const timeline = makeTimeline('example');
-   timeline.save();
+   const Timeline = makeTimeline('example');
+   timelineUser = new Timeline()
+   
 
 `'example'` is the name of the collection in MongoDB.
 
@@ -27,7 +28,7 @@ An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
    const tweetSchema = new mongoose.Schema({
       id: Number,
       id_str: String,
-      create_at: Date,
+      created_at: Date,
       text: String,
       tags: String,
       retweeted: Boolean,
