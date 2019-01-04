@@ -1,6 +1,6 @@
-===============
-Timeline model
-===============
+=================================
+Timeline model and his controller
+=================================
 
 This module can be used to save tweets from a user timeline in MongoDatabase.
 
@@ -16,8 +16,12 @@ An example:
 
 `'example'` is the name of the collection in MongoDB.
 
-API Doc
--------
+Also, in the root dir, there is :ref:`controller.js`, it has helpers to work with the TimelineModel. Besides, you can import :ref:`TimelineModel` initialized from here too.  
+
+.. _TimelineModel:
+
+Model API Doc
+-------------
 .. js:autoattribute:: models/timeline.tweetSchema
 An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
 
@@ -39,7 +43,15 @@ An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
 .. note::
    More at :ref:`timeline_description`. 
 
-
 .. autofunction:: models/timeline.makeTimelineModel
 
+.. _controller.js:
 
+Controller API Doc
+------------------
+
+.. js:autofunction:: controller.getGreatestId
+
+.. js:autofunction:: controller.getLowestId
+
+.. js:autoattribute:: controller.TimelineModel
