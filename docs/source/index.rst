@@ -11,6 +11,7 @@ Welcome to tradingpolitik's documentation!
    :caption: Contents:
 
    datalayer/index
+   cli/index
 
 
 

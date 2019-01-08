@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+const program = require('commander');
+const config = require('../lib/config');
+
+program
+  .option('-s, --server [server]', 'IP Direction of MongoDB')
+  .option('-c, --collection [collection]', 'Collection name')
+  .option('-f, --file-config [fileConfig]', 'User a config file')
+  .parse(process.argv);
+
+const params = program.args;
+
+if (!params.length) {
+  console.error('data file required');
+  process.exit(1);
+} else { 
+	if (params.length > 1) {
+		console.error('one argument allowed');
+		process.exit(1)
+  }
+}
+if (!program.collection) {
+	console.error('-c Collection argument its required');
+	process.exit(1);
+}
+
+if (program.server) {
+	config.mongodb.server = program.server;
+}
+if (program.fileConfig) {
+	console.log(program.fileConfig);
+} 
+
+params.forEach((param) => {
+	console.log(param);
+});
+console.log("Executed");
