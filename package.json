@@ -21,7 +21,7 @@
     "app-cli": "bin/app-cli"
   },
   "scripts": {
-    "test": "mocha ./tests/*",
+    "test": "mocha ./test*.js",
     "start": "./lib/main.js",
     "docker": "docker-compose up -d"
   },

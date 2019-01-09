@@ -1,8 +1,14 @@
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const fs = require('fs');
+const utils = require('util');
 const UserTimeline = require('../lib/UserTimeline');
+
+const readFileAsync = utils.promisify(fs.readFile);
 const twitResponse = JSON.parse(fs.readFileSync('../data/user_timeline.json'));
+const twitFile0 = '../data/user_timeline-0.json';
+const twitFile1 = '../data/user_timeline-1.json';
+const twitFile2 = '../data/user_timeline-2.json';
 
 describe('UserTimeline', function(){
   
@@ -13,6 +19,14 @@ describe('UserTimeline', function(){
     saveData: sinon.fake(),
   };
   const ut = new UserTimeline(T, controller);
+
+	before(async()=>{
+		const files = [];
+		files.push(JSON.parse(readFileAsync(twitFile0)));
+		files.push(JSON.parse(readFileAsync(twitFile1)));
+		files.push(JSON.parse(readFileAsync(twitFile2)));
+		await promise.all(files);
+	})
 
   beforeEach(() => {
     var tObject = sinon.stub(T, 'get');
@@ -70,5 +84,14 @@ describe('UserTimeline', function(){
     
     expect(ut.control.saveData.callCount).to.equal(34);
   })
+
+	it('iterateTweets -> firstTime', async()=>{
+		// getOldest
+		const getOldest = sinon.stub(ut, 'getOldest');
+		getOldest.resolves(files[0]);
+    ut.control.saveData = sinon.fake.returns(async () => {});
+		await ut.iterateTweets('cosmos_caos', 1234, 20);
+		expect(ut.control.saveData.callCount).to.equal(15);
+	})
   
 })
