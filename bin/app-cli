@@ -6,4 +6,5 @@ program
   .version('0.1.0')
 	.command('loaddb [file]', 'Load to mongodb')
 	.command('test [msg]', 'Test command')
+  .command('utils', 'Differents utilities')
   .parse(process.argv);
