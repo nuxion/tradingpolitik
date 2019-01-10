@@ -20,12 +20,18 @@ describe('UserTimeline', function(){
   };
   const ut = new UserTimeline(T, controller);
 
-	before(async()=>{
-		const files = [];
+	before(()=>{
+		this.files = [];
+		/*
 		files.push(JSON.parse(readFileAsync(twitFile0)));
 		files.push(JSON.parse(readFileAsync(twitFile1)));
 		files.push(JSON.parse(readFileAsync(twitFile2)));
-		await promise.all(files);
+		*/
+
+		this.files.push(JSON.parse(fs.readFileSync(twitFile0)))
+		this.files.push(JSON.parse(fs.readFileSync(twitFile1)))
+		this.files.push(JSON.parse(fs.readFileSync(twitFile2)))
+		//await Promise.all([files]);
 	})
 
   beforeEach(() => {
@@ -86,12 +92,27 @@ describe('UserTimeline', function(){
   })
 
 	it('iterateTweets -> firstTime', async()=>{
+		// console.log(`files lenght: ${this.files.length}`);
 		// getOldest
 		const getOldest = sinon.stub(ut, 'getOldest');
-		getOldest.resolves(files[0]);
+		getOldest.onCall(0).resolves(this.files[0]);
+		getOldest.onCall(1).resolves(this.files[1]);
+		getOldest.resolves(this.files[2]);
+
     ut.control.saveData = sinon.fake.returns(async () => {});
-		await ut.iterateTweets('cosmos_caos', 1234, 20);
-		expect(ut.control.saveData.callCount).to.equal(15);
+		await ut.iterateTweets('cosmos_caos', '1067069307576827904', 20, 'getOldest');
+		expect(ut.control.saveData.callCount).to.equal(34);
 	})
-  
+  it('iterateTweets -> existing', async()=>{
+		console.log(`files lenght: ${this.files.length}`);
+		// getNewest
+		const getNewest = sinon.stub(ut, 'getNewest');
+		getNewest.onCall(0).resolves(this.files[0]);
+		getNewest.onCall(1).resolves(this.files[1]);
+		getNewest.resolves(this.files[2]);
+    ut.control.saveData = sinon.fake.returns(async () => {});
+		await ut.iterateTweets('cosmos_caos', '324173293819138049', 20, 'getNewest');
+		expect(ut.control.saveData.callCount).to.equal(34);
+	})
+
 })

@@ -20,7 +20,7 @@ Also, in the root dir, there is :ref:`controller.js`, it has helpers to work wit
 
 .. _TimelineModel:
 
-Model API Doc
+TimelineModel API Doc
 -------------
 .. js:autoattribute:: models/timeline.tweetSchema
 An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
