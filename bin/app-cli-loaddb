@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 const program = require('commander');
+const fs = require('fs');
+const mongoose = require('mongoose');
+const makeTimelineModel = require('../lib/models/timeline');
 const config = require('../lib/config');
+//const control = require('../lib/controller');
 
 program
   .option('-s, --server [server]', 'IP Direction of MongoDB')
@@ -10,12 +14,13 @@ program
 
 const params = program.args;
 
+// Validations
 if (!params.length) {
   console.error('data file required');
   process.exit(1);
 } else { 
 	if (params.length > 1) {
-		console.error('one argument allowed');
+		console.error('only one argument allowed');
 		process.exit(1)
   }
 }
@@ -25,13 +30,54 @@ if (!program.collection) {
 }
 
 if (program.server) {
-	config.mongodb.server = program.server;
+	config.mongodb.server = program.server.toString();
 }
+
 if (program.fileConfig) {
 	console.log(program.fileConfig);
-} 
+}
 
-params.forEach((param) => {
-	console.log(param);
-});
-console.log("Executed");
+if (!fs.existsSync(params[0])) {
+  console.error(`File ${params[0]} not exist.`);
+  process.exist(1);
+}
+async function saveDataR(data, Model) {
+  const createdAt = new Date(data.created_at);
+  const timeline = new Model({
+    id: data.id,
+    id_str: data.id_str,
+    user: data.user.screen_name,
+    tags: data.entities.hashtags.toString(),
+    created_at: createdAt,
+    text: data.text,
+    retweeted: data.retweeted,
+    retweet_count: data.retweet_count,
+    favorite_count: data.favorite_count,
+  });
+  try{
+    await timeline.save();
+    console.log('Tweet saved');
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
+// Main()
+
+const TimelineModel = makeTimelineModel(program.collection);
+const tweetsFile = JSON.parse(fs.readFileSync(params[0]));
+console.log(`mongodb://${config.mongodb.server}`)
+mongoose.connect(`mongodb://${config.mongodb.server}`, { useNewUrlParser: true })
+  .then(() => console.log('Now connected to MongoDB!'))
+  .catch(err => console.error('Something went wrong', err));
+
+const saveTweet = (data) => { saveDataR(data, TimelineModel); };
+
+async function loadToDb() {
+  await tweetsFile.data.map(saveTweet);
+}
+
+loadToDb().then(() => {
+  mongoose.connection.close();
+  console.log('Executed');
+}).catch(e => console.error(e));
