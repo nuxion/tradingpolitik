@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+const program = require('commander');
+
+program
+  .option('-f, --force [name]', 'force command')
+  .parse(process.argv)
+
+var msg = program.args;
+
+console.log("Executed");
+msg.forEach(function(m){
+	console.log(m);
+});
+console.log(`Argument: ${program.force}`)

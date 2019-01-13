@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+const program = require('commander');
+const utilTwit = require('./utils');
+
+program
+  .command('chunk_file [file]')
+  .description('Divide a Tweet Json file')
+  .option('-s, --size', 'How much tweets do you want separate?')
+  .action(function(file, options){
+		 let pageSize = 15;
+     if(options.size > 0){
+			 pageSize = options.size;
+		 }
+     utilTwit.shardTweets(file, pageSize)
+			.then(data => console.log('New files generated here..'))
+		.catch(err => console.log(err));
+	});
+
+
+program.parse(process.argv);

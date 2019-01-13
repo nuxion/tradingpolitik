@@ -8,3 +8,4 @@ Related information about the data.
    
    usertimeline
    timelinemodule
+   usertimelineclass
