@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+const program = require('commander');
+
+program
+  .command('init [collection_name]', 'create an index and init a colleciton')
+  .command('load [file]', 'Load file on mongodb')
+  .command('drop [collection_name]', 'Drop a collection from mongodb')
+  .parse(process.argv);

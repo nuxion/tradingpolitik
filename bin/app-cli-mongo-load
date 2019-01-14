@@ -64,20 +64,32 @@ async function saveDataR(data, Model) {
 
 // Main()
 
-const TimelineModel = makeTimelineModel(program.collection);
+const TimelineModel = makeTimelineModel(program.collection.toString());
 const tweetsFile = JSON.parse(fs.readFileSync(params[0]));
-console.log(`mongodb://${config.mongodb.server}`)
-mongoose.connect(`mongodb://${config.mongodb.server}`, { useNewUrlParser: true })
+/*console.log(`mongodb://${config.mongodb.server}`);
+mongoose.connect(`mongodb://${config.mongodb.server}/testing`, { useNewUrlParser: true })
   .then(() => console.log('Now connected to MongoDB!'))
-  .catch(err => console.error('Something went wrong', err));
+  .catch(err => console.error('Something went wrong', err));*/
 
-const saveTweet = (data) => { saveDataR(data, TimelineModel); };
+const saveTweet = async (data) => { await saveDataR(data, TimelineModel); };
 
 async function loadToDb() {
-  await tweetsFile.data.map(saveTweet);
+  await Promise.all(tweetsFile.data.map(saveTweet));
+  return 'finish';
 }
 
-loadToDb().then(() => {
-  mongoose.connection.close();
-  console.log('Executed');
-}).catch(e => console.error(e));
+async function main() {
+  try {
+    await mongoose.connect(`mongodb://${config.mongodb.server}/testing`, { useNewUrlParser: true });
+    console.log('Now connected to MongoDb');
+  } catch (err) {
+    console.error(`Something went wrong ${err}`);
+  }
+  await loadToDb();
+  const count = await TimelineModel.countDocuments();
+  console.log(`Now there are ${count} documents in ${program.collection}.`);
+  await mongoose.connection.close();
+  console.log('Connection Closed, finish.');
+}
+
+main();

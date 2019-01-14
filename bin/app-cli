@@ -4,7 +4,6 @@ const program = require('commander');
 
 program
   .version('0.1.0')
-	.command('loaddb [file]', 'Load to mongodb')
-	.command('test [msg]', 'Test command')
+	.command('mongo', 'Commands related to mongodb')
   .command('utils', 'Differents utilities')
   .parse(process.argv);

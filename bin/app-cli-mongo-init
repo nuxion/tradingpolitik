@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+const program = require('commander');
+const config = require('../lib/config');
+const mongo = require('./mongo');
+//const control = require('../lib/controller');
+
+program
+  .option('-s, --server [server]', 'IP Direction of MongoDB')
+  .option('-f, --file-config [fileConfig]', 'User a config file')
+  .parse(process.argv);
+
+const params = program.args;
+
+// Validations
+if (!params.length) {
+  console.error('collection name is required');
+  process.exit(1);
+} else { 
+	if (params.length > 1) {
+		console.error('only one argument allowed');
+		process.exit(1)
+  }
+}
+if (program.server) {
+	config.mongodb.server = program.server.toString();
+  config.mongodb.url = `mongodb://${config.mongodb.server}:27017/${config.mongodb.db}`;
+}
+
+if (program.fileConfig) {
+	console.log(program.fileConfig);
+}
+config.mongodb.collection = params[0];
+
+// Main()
+mongo.createIndex(config.mongodb).then(() => console.log('Done.')).catch(e => console.log(e));
