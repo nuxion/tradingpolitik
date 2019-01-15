@@ -23,7 +23,8 @@ Also, in the root dir, there is :ref:`controller.js`, it has helpers to work wit
 TimelineModel API Doc
 -------------
 .. js:autoattribute:: models/timeline.tweetSchema
-An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
+
+   An object of type mongoose.Schema used by :js:meth:`makeTimelineModel`.
 
 .. code-block:: javascript
    :linenos:
@@ -49,9 +50,17 @@ An object of type mongoose.Schema used by :js:func:`makeTimelineModel`.
 
 Controller API Doc
 ------------------
+The Controller has functions that helps to manage MongoDB operations.
+Basically, this module helps to save, find, and load data from MongoDB.
 
 .. js:autofunction:: controller.getGreatestId
 
 .. js:autofunction:: controller.getLowestId
 
-.. js:autoattribute:: controller.TimelineModel
+.. js:autofunction:: controller.preData
+.. deprecated:: 3.0.0
+   saveData needs a Mongoose model class to save the object.
+
+.. js:autofunction:: controller.saveDataR
+.. versionadded:: 3.0.0
+   It replaces :js:meth:`controller.preData`

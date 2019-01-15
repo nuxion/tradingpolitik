@@ -2,7 +2,7 @@ const sinon = require('sinon');
 const expect = require('chai').expect;
 const fs = require('fs');
 const utils = require('util');
-const UserTimeline = require('../lib/UserTimeline');
+const proxyquire = require('proxyquire');
 
 const readFileAsync = utils.promisify(fs.readFile);
 const twitResponse = JSON.parse(fs.readFileSync('../data/user_timeline.json'));
@@ -10,24 +10,23 @@ const twitFile0 = '../data/user_timeline-0.json';
 const twitFile1 = '../data/user_timeline-1.json';
 const twitFile2 = '../data/user_timeline-2.json';
 
-describe('UserTimeline', function(){
+describe('UserTimeline', function() {
   
   const T = { get : () => "test" };
-  const controller = { 
+  const controller = {
     getLowestId: sinon.stub(),
     getGreatestId: sinon.stub(),
     saveData: sinon.fake(),
   };
-  const ut = new UserTimeline(T, controller);
+  var saveDataStub;
+  var getLowestIdStub;
+  var getGreatestIdStub;
+  var UserTimeline;
+  var ut;
 
-	before(()=>{
-		this.files = [];
-		/*
-		files.push(JSON.parse(readFileAsync(twitFile0)));
-		files.push(JSON.parse(readFileAsync(twitFile1)));
-		files.push(JSON.parse(readFileAsync(twitFile2)));
-		*/
 
+	before(() => {
+   	this.files = [];
 		this.files.push(JSON.parse(fs.readFileSync(twitFile0)))
 		this.files.push(JSON.parse(fs.readFileSync(twitFile1)))
 		this.files.push(JSON.parse(fs.readFileSync(twitFile2)))
@@ -35,6 +34,20 @@ describe('UserTimeline', function(){
 	})
 
   beforeEach(() => {
+    saveDataStub = sinon.fake();
+    getLowestIdStub = sinon.stub();
+    getGreatestIdStub = sinon.stub();
+    UserTimeline = proxyquire('../lib/UserTimeline',
+      {
+        './controller':
+        /*{
+          saveDataR: saveDataStub,
+          getLowestId: getLowestIdStub,
+          getGreatestId: getGreatestIdStub
+        }*/
+        controller
+      });
+
     var tObject = sinon.stub(T, 'get');
     tObject.withArgs('/statuses/user_timeline', 
       { screen_name: 'cosmos_caos', count: 20 })
@@ -42,9 +55,11 @@ describe('UserTimeline', function(){
       .withArgs('/statuses/user_timeline', 
       { screen_name: 'cosmos_caos', count: 200 })
       .resolves(twitResponse);
+
+    ut = new UserTimeline(T, controller);
   })
 
-  afterEach(()=>{
+  afterEach(() => {
     sinon.restore();
   })
 
@@ -58,37 +73,36 @@ describe('UserTimeline', function(){
   })
 
   it ('getTimeline', async () => {
-    response = await ut.getTimeline('cosmos_caos', 20);
+    const response = await ut.getTimeline('cosmos_caos', 20);
     expect(response.resp.statusCode).to.equal(200);
   })
 
   it('getRangeIds -> getTimeline', async () =>{
-    var getTimeline = sinon.spy(ut, 'getTimeline');
-    //var fake = sinon.fake.returns(true);
-    //ut.getTimeline = fake;
+    const getTimeline = sinon.spy(ut, 'getTimeline');
 
-    ut.control.getLowestId = sinon.stub().returns([]);
-    ut.control.getGreatestId = sinon.stub().returns([]);
+    getLowestIdStub = sinon.stub().returns([]);
+    getGreatestIdStub = sinon.stub().returns([]);
+    UserTimeline['./controller'].getLowestId = getLowestIdStub;
+    UserTimeline['./controller'].getGreatestId = getGreatestIdStub;
 
     await ut.getRangeIds('cosmos_caos', 20, {});
-    //expect(result).to.equal(true);
     expect(getTimeline.called).to.be.true;
   })
 
   it('getRangeIds -> getTimelineRange', async () =>{
     var getTimelineRange = sinon.spy(ut, 'getTimelineRange');
-    ut.control.getLowestId = sinon.stub().returns([{}]);
-    ut.control.getGreatestId = sinon.stub().returns([{}]);
+    getLowestIdStub = sinon.stub().returns([{}]);
+    getGreatestIdStub = sinon.stub().returns([{}]);
 
     await ut.getRangeIds('cosmos_caos', 20, {});
     expect(getTimelineRange.called).to.be.true;
   })
   
   it('firstTime', async ()=> {
-    ut.control.saveData = sinon.fake.returns(async () => {});
+    saveDataStub = sinon.fake.returns(async () => {});
     await ut.firstTime('cosmos_caos', 200);
     
-    expect(ut.control.saveData.callCount).to.equal(34);
+    expect(saveDataStub.callCount).to.equal(34);
   })
 
 	it('iterateTweets -> firstTime', async()=>{
@@ -99,9 +113,9 @@ describe('UserTimeline', function(){
 		getOldest.onCall(1).resolves(this.files[1]);
 		getOldest.resolves(this.files[2]);
 
-    ut.control.saveData = sinon.fake.returns(async () => {});
+    ut.saveData = sinon.fake.returns(async () => {});
 		await ut.iterateTweets('cosmos_caos', '1067069307576827904', 20, 'getOldest');
-		expect(ut.control.saveData.callCount).to.equal(34);
+		expect(ut.saveData.callCount).to.equal(34);
 	})
   it('iterateTweets -> existing', async()=>{
 		console.log(`files lenght: ${this.files.length}`);
@@ -110,9 +124,9 @@ describe('UserTimeline', function(){
 		getNewest.onCall(0).resolves(this.files[0]);
 		getNewest.onCall(1).resolves(this.files[1]);
 		getNewest.resolves(this.files[2]);
-    ut.control.saveData = sinon.fake.returns(async () => {});
+    ut.saveData = sinon.fake.returns(async () => {});
 		await ut.iterateTweets('cosmos_caos', '324173293819138049', 20, 'getNewest');
-		expect(ut.control.saveData.callCount).to.equal(34);
+		expect(ut.saveData.callCount).to.equal(34);
 	})
 
 })
