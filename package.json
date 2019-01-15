@@ -4,6 +4,7 @@
   "description": "Politik Trading",
   "main": "./lib/main.js",
   "dependencies": {
+    "debug": "^4.1.1",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.1",
     "twit": "^2.2.11"
