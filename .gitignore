@@ -2,6 +2,6 @@ node_modules/*
 config_dev.js
 *.swp
 docs/build/*
-<<<<<<< HEAD
 b-timeline*.json
 timeline_pagination*.json
+.env

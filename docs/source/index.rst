@@ -12,6 +12,7 @@ Welcome to tradingpolitik's documentation!
 
    datalayer/index
    cli/index
+   config
 
 
 

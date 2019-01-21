@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+const program = require('commander');
+const Twit = require('twit');
+const mongoose = require('mongoose');
+const conf = require('../lib/config');
+const UserTimeline = require('../lib/UserTimeline');
+const makeTimelineModel = require('../lib/models/timeline.js');
+
+program
+  .option('-u, --user [screen_name]', 'Screen Name of the user to get tweets.')
+  .option('-t, --tweets [tweets]', 'How much tweets get.')
+  .option('-c, --collection [collection]', 'Collection name for mongodb.')
+  .parse(process.argv);
+
+let colName;
+let count;
+
+if (!program.user) {
+  console.error('username is required.');
+  process.exit(1);
+}
+
+if (!program.collection) {
+  colName = conf.get('mongodb.collection');
+} else {
+  colName = program.collection;
+}
+
+if (!program.tweets) {
+  count = 200;
+} else {
+  count = parseInt(program.tweets, 10);
+}
+
+async function getTweets(user, count, userTimeline) {
+  console.log("called...");
+  console.log(Model);
+  const newestTweet = await userTimeline.getGreatestId(user, count);
+  console.log(newestTweet);
+  if (newestTweet.length !== 0) {
+		// if the user exist on mongoDB
+    console.log(`user: ${user} id: ${newestTweet[0].id_str}`);
+    await userTimeline.iterateTweets(user, newestTweet[0].id_str, count, 'getNewest');
+  } else {
+      const lastTweet = await userTimeline.firstTime(user, count);
+      await userTimeline.iterateTweets(user, lastTweet.id_str, count, 'getOldest');
+    }
+}
+mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
+  .then(() => console.log('Now connected to MongoDB!'))
+  .catch(err => console.error('Something went wrong', err));
+
+const T = new Twit(conf.get('twitter'));
+const Model = makeTimelineModel(colName);
+const userTimeline = new UserTimeline(T, Model);
+console.log(conf.get('twitter'));
+console.log(conf.get('mongodb'));
+getTweets(program.user, count, userTimeline).then(
+  () => { console.log('Finish...'); }
+);

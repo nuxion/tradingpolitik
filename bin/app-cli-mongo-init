@@ -10,7 +10,8 @@ program
   .parse(process.argv);
 
 const params = program.args;
-
+let mongoUrl;
+const mongodb = config.get('mongodb');
 // Validations
 if (!params.length) {
   console.error('collection name is required');
@@ -22,14 +23,15 @@ if (!params.length) {
   }
 }
 if (program.server) {
-	config.mongodb.server = program.server.toString();
-  config.mongodb.url = `mongodb://${config.mongodb.server}:27017/${config.mongodb.db}`;
+  //config.get('mongodb.server');
+  mongodb.url = `mongodb://${program.server}:27017/${mongodb.db}`;
+  console.log(mongodb.url);
 }
 
 if (program.fileConfig) {
 	console.log(program.fileConfig);
 }
-config.mongodb.collection = params[0];
+mongodb.collection = params[0];
 
 // Main()
-mongo.createIndex(config.mongodb).then(() => console.log('Done.')).catch(e => console.log(e));
+mongo.createIndex(mongodb).then(() => console.log('Done.')).catch(e => console.log(e));
