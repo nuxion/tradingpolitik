@@ -1,6 +1,6 @@
 const sinon = require('sinon');
 const expect = require('chai').expect;
-const conf = require('../lib/config2.js');
+const conf = require('../lib/config.js');
 
 
 describe('Config testing', function() {
@@ -11,8 +11,8 @@ describe('Config testing', function() {
   });
 
   it('Test json config value', () => {
-    const mongodb = conf.get('mongodb.url');
-    expect(mongodb).to.equal('mongodb://localhost');
+    const mongodb = conf.get('mongodb.server');
+    expect(mongodb).to.equal('mongodb');
   })
 
   it('Test default config value', ()=> {
