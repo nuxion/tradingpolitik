@@ -17,7 +17,7 @@ describe('Integration main()', function(){
 
   it('Save user timeline',async () => {
 
-    await main.getTweets(this.name, this.count, this.ut);
+    await main(this.name, this.count, this.ut);
     const result = await control.TimelineModel.count();
     expect(34).to.equal(result);
   })

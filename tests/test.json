@@ -1,5 +1,9 @@
 {
     "mongodb": {
-        "url": "mongodb://localhost"
+        "url": "mongodb://mongodb/testing",
+        "server": "mongodb",
+        "port": 27017,
+        "db": "testing",
+	"collection": "timelinetrading"
     }
 }

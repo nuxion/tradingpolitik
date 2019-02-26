@@ -2,7 +2,7 @@
   "name": "tradingpolitik",
   "version": "0.24",
   "description": "Politik Trading",
-  "main": "./lib/main.js",
+  "main": "./lib/app.js",
   "dependencies": {
     "convict": "^4.4.1",
     "debug": "^4.1.1",

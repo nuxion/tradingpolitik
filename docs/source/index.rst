@@ -10,6 +10,7 @@ Welcome to tradingpolitik's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   application
    datalayer/index
    cli/index
    config

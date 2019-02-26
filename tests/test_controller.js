@@ -3,17 +3,17 @@ const expect = require('chai').expect;
 const mongoose = require('mongoose');
 const control = require('../lib/controller');
 const makeTimelineModel = require('../lib/models/timeline');
-const conf = require('../lib/config_dev.js');
+const conf = require('../lib/config.js');
 
 
-describe('Controller', function() {
+describe('Controller', async function() {
 
   before(async () => {
-    mongoose.connect(`mongodb://${conf.mongodb.server}/testing`,
+    mongoose.connect(`mongodb://${conf.get('mongodb.server')}/testing`,
       { useNewUrlParser: true })
     .then(() => console.log('Now connected to MongoDB!'))
     .catch(err => console.error('Something went wrong', err));
-    this.Timeline = makeTimelineModel('test_cosmos')
+    this.Timeline = makeTimelineModel('cosmos_caos')
   })
 
   after(() => mongoose.connection.close())

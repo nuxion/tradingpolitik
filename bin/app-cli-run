@@ -3,8 +3,10 @@ const program = require('commander');
 const Twit = require('twit');
 const mongoose = require('mongoose');
 const conf = require('../lib/config');
-const UserTimeline = require('../lib/UserTimeline');
-const makeTimelineModel = require('../lib/models/timeline.js');
+//const UserTimeline = require('../lib/UserTimeline');
+//const makeTimelineModel = require('../lib/models/timeline.js');
+const App = require('../lib/app');
+
 
 program
   .option('-u, --user [screen_name]', 'Screen Name of the user to get tweets.')
@@ -32,29 +34,18 @@ if (!program.tweets) {
   count = parseInt(program.tweets, 10);
 }
 
-async function getTweets(user, count, userTimeline) {
-  console.log("called...");
-  console.log(Model);
-  const newestTweet = await userTimeline.getGreatestId(user, count);
-  console.log(newestTweet);
-  if (newestTweet.length !== 0) {
-		// if the user exist on mongoDB
-    console.log(`user: ${user} id: ${newestTweet[0].id_str}`);
-    await userTimeline.iterateTweets(user, newestTweet[0].id_str, count, 'getNewest');
-  } else {
-      const lastTweet = await userTimeline.firstTime(user, count);
-      await userTimeline.iterateTweets(user, lastTweet.id_str, count, 'getOldest');
-    }
-}
 mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
   .then(() => console.log('Now connected to MongoDB!'))
-  .catch(err => console.error('Something went wrong', err));
+  .then(() => {
+    const app = new App();
+    const T = new Twit(conf.get('twitter'));
+    app.setTimeline(T, colName);
+    app.run(program.user, count).then(
+      () => { console.log('Finish...'); }
+    ).then(() => process.exit());
+  }).catch(err => {
+    console.error('Something went wrong', err);
+    process.exit(1);
+  });
 
-const T = new Twit(conf.get('twitter'));
-const Model = makeTimelineModel(colName);
-const userTimeline = new UserTimeline(T, Model);
-console.log(conf.get('twitter'));
-console.log(conf.get('mongodb'));
-getTweets(program.user, count, userTimeline).then(
-  () => { console.log('Finish...'); }
-);
+
