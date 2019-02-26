@@ -7,4 +7,5 @@ program
 	.command('mongo', 'Commands related to mongodb')
 	.command('run', 'Get timeline from tweet')
   .command('utils', 'Differents utilities')
+  .command('test', 'Testing')
   .parse(process.argv);

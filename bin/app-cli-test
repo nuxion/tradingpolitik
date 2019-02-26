@@ -1,14 +1,22 @@
 #!/usr/bin/env node
 const program = require('commander');
+const mongoose = require('mongoose');
+const conf = require('../lib/config');
 
 program
   .option('-f, --force [name]', 'force command')
+  .option('-D, --docker [name]', 'Test that the instance work find')
   .parse(process.argv)
 
 var msg = program.args;
 
-console.log("Executed");
-msg.forEach(function(m){
-	console.log(m);
-});
-console.log(`Argument: ${program.force}`)
+if (program.docker){
+	console.log(program.docker);
+	mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
+		.then( () => console.log("1.- MongoDB connected..."))
+		.then( () => {
+			console.log(`ACCESS_TOKEN ENV = ${conf.get('twitter.consumer_key')}`);
+			const screen_name = process.env.TWITTER_PROFILE;
+			console.log(`Twitter profile: ${screen_name}`);
+		}).catch( err => console.log(`Something went wrong ${err}`))
+}

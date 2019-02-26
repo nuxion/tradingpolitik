@@ -16,10 +16,14 @@ program
 
 let colName;
 let count;
+let screen_name;
 
 if (!program.user) {
   console.error('username is required.');
-  process.exit(1);
+	screen_name = process.env.TWITTER_PROFILE
+	//process.exit(1);
+}else{
+	screen_name = program.user;
 }
 
 if (!program.collection) {
@@ -40,7 +44,7 @@ mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
     const app = new App();
     const T = new Twit(conf.get('twitter'));
     app.setTimeline(T, colName);
-    app.run(program.user, count).then(
+    app.run(screen_name, count).then(
       () => { console.log('Finish...'); }
     ).then(() => process.exit());
   }).catch(err => {
