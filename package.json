@@ -1,6 +1,6 @@
 {
   "name": "tradingpolitik",
-  "version": "0.24",
+  "version": "0.24.0",
   "description": "Politik Trading",
   "main": "./lib/app.js",
   "dependencies": {
