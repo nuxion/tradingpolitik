@@ -9,11 +9,11 @@
     "dotenv": "^6.2.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.1",
+    "commander": "^2.19.0",
     "twit": "^2.2.11"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "commander": "^2.19.0",
     "dockerode": "^2.5.8",
     "eslint": "^5.11.1",
     "eslint-config-airbnb-base": "^13.1.0",

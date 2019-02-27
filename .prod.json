@@ -3,4 +3,10 @@
         "db": "testing",
         "options": {"useNewUrlParser": true,"connectTimeoutMS": 5000 }
     }
+},
+{
+	"twitter": {
+		"timeout_ms": 60000,
+		"strictSSL": true
+	}
 }

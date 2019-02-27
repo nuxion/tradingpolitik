@@ -1,20 +1,13 @@
-FROM node:8 as builder
+FROM node:8-alpine as builder
 # Create app directory
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 COPY . .
 
-from node:8
+from node:8-alpine
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .
-#ENV ACCESS_TOKEN
-#ENV ACCESS_TOKEN_SECRET
-#ENV CONSUMER_KEY
-#ENV CONSUMER_SECRET
 ENV NODE_ENV="prod"
-ENV TRADING_DB_COL="testing_docker"
-ENV TWITTER_PROFILE="test"
-#ENV TRADING_DB_URL
-#CMD ["npm", "run", "cli", "--", "test", "-D"]
 ENTRYPOINT ["node", "bin/app-cli"]
+#CMD ["--help"]

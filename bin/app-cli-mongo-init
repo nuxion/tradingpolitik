@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander');
 const config = require('../lib/config');
-const mongo = require('./mongo');
-//const control = require('../lib/controller');
+const mongo = require('../lib/mongo');
 
 program
   .option('-s, --server [server]', 'IP Direction of MongoDB')
@@ -10,26 +9,22 @@ program
   .parse(process.argv);
 
 const params = program.args;
-let mongoUrl;
 const mongodb = config.get('mongodb');
 // Validations
 if (!params.length) {
   console.error('collection name is required');
   process.exit(1);
-} else { 
-	if (params.length > 1) {
-		console.error('only one argument allowed');
-		process.exit(1)
-  }
+} else if (params.length > 1) {
+  console.error('only one argument allowed');
+  process.exit(1);
 }
 if (program.server) {
-  //config.get('mongodb.server');
   mongodb.url = `mongodb://${program.server}:27017/${mongodb.db}`;
   console.log(mongodb.url);
 }
 
 if (program.fileConfig) {
-	console.log(program.fileConfig);
+  console.log(program.fileConfig);
 }
 mongodb.collection = params[0];
 

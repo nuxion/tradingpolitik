@@ -3,8 +3,8 @@ const program = require('commander');
 const Twit = require('twit');
 const mongoose = require('mongoose');
 const conf = require('../lib/config');
-//const UserTimeline = require('../lib/UserTimeline');
-//const makeTimelineModel = require('../lib/models/timeline.js');
+// const UserTimeline = require('../lib/UserTimeline');
+// const makeTimelineModel = require('../lib/models/timeline.js');
 const App = require('../lib/app');
 
 
@@ -20,10 +20,10 @@ let screen_name;
 
 if (!program.user) {
   console.error('username is required.');
-	screen_name = process.env.TWITTER_PROFILE
-	//process.exit(1);
-}else{
-	screen_name = program.user;
+  screen_name = process.env.TWITTER_PROFILE;
+  // process.exit(1);
+} else {
+  screen_name = program.user;
 }
 
 if (!program.collection) {
@@ -38,18 +38,20 @@ if (!program.tweets) {
   count = parseInt(program.tweets, 10);
 }
 
-mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
+mongoose.connect(`${conf.get('mongodb.url')}`, conf.get('mongodb.options'))
   .then(() => console.log('Now connected to MongoDB!'))
+  .then(() => {
+
+  })
   .then(() => {
     const app = new App();
     const T = new Twit(conf.get('twitter'));
     app.setTimeline(T, colName);
     app.run(screen_name, count).then(
-      () => { console.log('Finish...'); }
+      () => { console.log('Finish...'); },
     ).then(() => process.exit());
-  }).catch(err => {
+  })
+  .catch((err) => {
     console.error('Something went wrong', err);
     process.exit(1);
   });
-
-
