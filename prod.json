@@ -1,7 +1,6 @@
 {
     "mongodb": {
-        "url": "mongodb://mongodb:27017/testing",
         "db": "testing",
-	"collection": "timelinetrading"
+        "options": {"useNewUrlParser": true,"connectTimeoutMS": 5000 }
     }
 }

@@ -12,11 +12,18 @@ var msg = program.args;
 
 if (program.docker){
 	console.log(program.docker);
-	mongoose.connect(`${conf.get('mongodb.url')}`, { useNewUrlParser: true })
+	mongoose.connect(`${conf.get('mongodb.url')}`, conf.get('mongodb.options'))
 		.then( () => console.log("1.- MongoDB connected..."))
 		.then( () => {
 			console.log(`ACCESS_TOKEN ENV = ${conf.get('twitter.consumer_key')}`);
 			const screen_name = process.env.TWITTER_PROFILE;
 			console.log(`Twitter profile: ${screen_name}`);
-		}).catch( err => console.log(`Something went wrong ${err}`))
+		})//.catch( err => console.log(`Something went wrong ${err}`))
 }
+
+console.log("===== ENVIRONMENT =====");
+const package = require('../package.json');
+console.log(`Version: ${package.version}`);
+console.log(conf);
+console.log(process.env);
+

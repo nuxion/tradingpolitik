@@ -28,7 +28,8 @@
   "scripts": {
     "test": "mocha ./test*.js",
     "start": "./lib/main.js",
-    "docker": "docker-compose up -d"
+    "docker": "docker-compose up -d",
+    "cli": "./bin/app-cli"
   },
   "author": "Xavier Petit",
   "license": "MPL-2.0"

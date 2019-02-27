@@ -15,4 +15,6 @@ COPY --from=builder /usr/src/app .
 ENV NODE_ENV="prod"
 ENV TRADING_DB_COL="testing_docker"
 ENV TWITTER_PROFILE="test"
-ENTRYPOINT ["npx", "app-cli", "docker", "-D"]
+#ENV TRADING_DB_URL
+#CMD ["npm", "run", "cli", "--", "test", "-D"]
+ENTRYPOINT ["node", "bin/app-cli"]
