@@ -3,6 +3,7 @@ const program = require('commander');
 const Twit = require('twit');
 const mongoose = require('mongoose');
 const conf = require('../lib/config');
+const mongo = require('../lib/mongo');
 // const UserTimeline = require('../lib/UserTimeline');
 // const makeTimelineModel = require('../lib/models/timeline.js');
 const App = require('../lib/app');
@@ -38,11 +39,13 @@ if (!program.tweets) {
   count = parseInt(program.tweets, 10);
 }
 
+const mongodb = conf.get('mongodb');
+mongodb.collection = colName;
+
+
 mongoose.connect(`${conf.get('mongodb.url')}`, conf.get('mongodb.options'))
   .then(() => console.log('Now connected to MongoDB!'))
-  .then(() => {
-
-  })
+  .then(() => mongo.createIndex(mongodb))
   .then(() => {
     const app = new App();
     const T = new Twit(conf.get('twitter'));
