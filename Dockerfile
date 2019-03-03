@@ -2,7 +2,8 @@ FROM node:8-alpine as builder
 # Create app directory
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install --production
+RUN npm ci --only=production
+#RUN npm i 
 COPY . .
 
 from node:8-alpine

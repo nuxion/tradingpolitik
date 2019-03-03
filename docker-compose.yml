@@ -2,12 +2,12 @@
 version: '3'
 
 services:
-    politik-red:
-        image: redis:5.0.3-alpine
-        ports:
-            - 6379:6379
-        networks:
-            - politik
+    #    politik-red:
+    #    image: redis:5.0.3-alpine
+    #    ports:
+    #        - 6379:6379
+    #    networks:
+    #        - politik
     politik-mongo:
         image: mvertes/alpine-mongo:4.0.5-0
         networks:
